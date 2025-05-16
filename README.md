@@ -153,3 +153,59 @@ Make sure your `README.md` clearly explains how to **install, run, and test** ev
 
 We look forward to your submission!  
 **Thank you!**
+
+### Installation
+
+1. Install pyenv (if not already installed):
+```bash
+# Windows (using PowerShell)
+Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1"
+```
+
+2. Install the correct Python version:
+```bash
+pyenv install 3.12
+pyenv local 3.12
+```
+
+3. Install Poetry (if not already installed):
+```bash
+(Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | python -
+```
+
+4. Clone the repository:
+```bash
+git clone https://github.com/your-username/DTEAM-django-practical-test.git
+cd DTEAM-django-practical-test
+```
+
+5. Install dependencies:
+```bash
+poetry install
+```
+
+6. Activate the virtual environment:
+```bash
+poetry shell
+```
+
+7. Apply migrations:
+```bash
+python manage.py migrate
+```
+
+8. Load initial data:
+```bash
+python manage.py loaddata cv_fixture.json
+```
+
+9. Run the development server:
+```bash
+python manage.py runserver
+```
+
+### Running Tests
+To run the tests:
+```bash
+python manage.py test main.tests
+```
