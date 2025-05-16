@@ -1,0 +1,56 @@
+{% extends 'main/base.html' %}
+
+{% block title %}{{ cv.first_name }} {{ cv.last_name }} - CV{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="card-title mb-0">{{ cv.first_name }} {{ cv.last_name }}</h1>
+        </div>
+        
+        <div class="mb-4">
+            <h3>About</h3>
+            <p>{{ cv.bio }}</p>
+        </div>
+
+        <div class="mb-4">
+            <h3>Skills</h3>
+            <div>
+                {% for skill in cv.skills.all %}
+                    <span class="badge bg-primary me-2 mb-2">{{ skill.skill }}</span>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <h3>Projects</h3>
+            <div class="row">
+                {% for project in cv.projects.all %}
+                <div class="col-md-6 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ project.project }}</h5>
+                            <p class="card-text">{{ project.description }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <h3>Contact Information</h3>
+            <div class="list-group">
+                {% for contact in cv.contacts.all %}
+                <div class="list-group-item">
+                    <strong>{{ contact.get_type_display }}:</strong> {{ contact.contact }}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <a href="{% url 'main:cv_list' %}" class="btn btn-primary">Back to List</a>
+    </div>
+</div>
+{% endblock %} 
