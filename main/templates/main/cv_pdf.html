@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ cv.first_name }} {{ cv.last_name }} - CV</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+        }
+        h3 {
+            color: #444;
+            margin-top: 20px;
+        }
+        .skill {
+            display: inline-block;
+            background: #007bff;
+            color: white;
+            padding: 5px 10px;
+            margin: 5px;
+            border-radius: 3px;
+        }
+        .project {
+            margin: 15px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .contact {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>{{ cv.first_name }} {{ cv.last_name }}</h1>
+    
+    <div>
+        <h3>About</h3>
+        <p>{{ cv.bio }}</p>
+    </div>
+
+    <div>
+        <h3>Skills</h3>
+        <div>
+            {% for skill in cv.skills.all %}
+                <span class="skill">{{ skill.skill }}</span>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div>
+        <h3>Projects</h3>
+        {% for project in cv.projects.all %}
+        <div class="project">
+            <h4>{{ project.project }}</h4>
+            <p>{{ project.description }}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div>
+        <h3>Contact Information</h3>
+        {% for contact in cv.contacts.all %}
+        <div class="contact">
+            <strong>{{ contact.get_type_display }}:</strong> {{ contact.contact }}
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html> 
