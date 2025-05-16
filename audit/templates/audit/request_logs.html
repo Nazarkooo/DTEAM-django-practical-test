@@ -1,0 +1,39 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Request Logs{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Recent Requests</h1>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>Method</th>
+                <th>Path</th>
+                <th>Query String</th>
+                <th>IP Address</th>
+                <th>User</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in logs %}
+            <tr>
+                <td>{{ log.timestamp|date:"Y-m-d H:i:s" }}</td>
+                <td><span class="badge {% if log.method == 'GET' %}bg-success{% elif log.method == 'POST' %}bg-primary{% else %}bg-warning{% endif %}">{{ log.method }}</span></td>
+                <td>{{ log.path }}</td>
+                <td><small class="text-muted">{{ log.query_string|default:"-" }}</small></td>
+                <td>{{ log.remote_addr|default:"-" }}</td>
+                <td>{{ log.user.username|default:"Anonymous" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center">No requests logged yet.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %} 
