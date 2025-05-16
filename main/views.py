@@ -6,6 +6,7 @@ from django.template.loader import get_template
 from io import BytesIO
 from xhtml2pdf import pisa
 from .tasks import send_cv_pdf
+from .translation import translate_text, SUPPORTED_LANGUAGES
 
 
 class CVListView(ListView):
@@ -24,16 +25,53 @@ class CVDetailView(DetailView):
     def get_queryset(self):
         return CVModel.objects.prefetch_related('skills', 'projects', 'contacts')
     
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['languages'] = SUPPORTED_LANGUAGES
+        return context
+    
     def post(self, request, *args, **kwargs):
         cv = self.get_object()
-        email = request.POST.get('email')
         
-        if email:
-            send_cv_pdf.delay(cv.id, email)
-            return JsonResponse({'status': 'success'})
-        
-        return JsonResponse({'status': 'error', 'message': 'Email is required'})
-    
+        if 'email' in request.POST:
+            email = request.POST.get('email')
+            if email:
+                send_cv_pdf.delay(cv.id, email)
+                return JsonResponse({'status': 'success'})
+            return JsonResponse({'status': 'error', 'message': 'Email is required'})
+            
+        elif 'translate' in request.POST:
+            language = request.POST.get('language')
+            if not language:
+                return JsonResponse({'status': 'error', 'message': 'Language is required'})
+
+            translated_data = {
+                'first_name': translate_text(cv.first_name, language),
+                'last_name': translate_text(cv.last_name, language),
+                'bio': translate_text(cv.bio, language),
+                'skills': [
+                    {'id': skill.id, 'skill': translate_text(skill.skill, language)}
+                    for skill in cv.skills.all()
+                ],
+                'projects': [
+                    {
+                        'id': project.id,
+                        'project': translate_text(project.project, language),
+                        'description': translate_text(project.description, language)
+                    }
+                    for project in cv.projects.all()
+                ],
+                'contacts': [
+                    {'id': contact.id, 'type': contact.type, 'contact': contact.contact}
+                    for contact in cv.contacts.all()
+                ]
+            }
+            
+            return JsonResponse({
+                'status': 'success',
+                'translated': translated_data
+            })
+
 
 class SettingsView(TemplateView):
     template_name = 'main/settings.html'
