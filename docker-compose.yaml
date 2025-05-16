@@ -16,6 +16,7 @@ services:
     environment:
       - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
       - DEBUG=${DEBUG}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
     env_file:
       - .env
 
@@ -49,6 +50,7 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_HOST=${POSTGRES_HOST}
       - POSTGRES_PORT=${POSTGRES_PORT}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
     env_file:
       - .env
 

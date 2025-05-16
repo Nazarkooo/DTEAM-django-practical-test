@@ -6,38 +6,46 @@
 <div class="card">
     <div class="card-body">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="card-title mb-0">{{ cv.first_name }} {{ cv.last_name }}</h1>
+            <h1 class="card-title mb-0" id="cv-name">{{ cv.first_name }} {{ cv.last_name }}</h1>
             <div>
-                <a href="{% url 'main:cv_pdf' cv.id %}" class="btn btn-success me-2">Download PDF</a>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#emailModal">
-                    Send PDF to Email
+                <select id="languageSelect" class="form-select me-2" style="display: inline-block; width: auto;">
+                    {% for code, name in languages %}
+                    <option value="{{ code }}">{{ name }}</option>
+                    {% endfor %}
+                </select>
+                <button class="btn btn-info me-2" onclick="translateCV()">Translate</button>
+                <button class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#emailModal">
+                    Send PDF
                 </button>
+                <a href="{% url 'main:cv_pdf' cv.id %}" class="btn btn-primary">Download PDF</a>
             </div>
         </div>
         
         <div class="mb-4">
             <h3>About</h3>
-            <p>{{ cv.bio }}</p>
+            <p id="cv-bio">{{ cv.bio }}</p>
         </div>
 
         <div class="mb-4">
             <h3>Skills</h3>
-            <div>
+            <div id="cv-skills">
                 {% for skill in cv.skills.all %}
-                    <span class="badge bg-primary me-2 mb-2">{{ skill.skill }}</span>
+                    <span class="badge bg-primary me-2 mb-2" data-skill-id="{{ skill.id }}">
+                        {{ skill.skill }}
+                    </span>
                 {% endfor %}
             </div>
         </div>
 
         <div class="mb-4">
             <h3>Projects</h3>
-            <div class="row">
+            <div id="cv-projects" class="row">
                 {% for project in cv.projects.all %}
-                <div class="col-md-6 mb-3">
+                <div class="col-md-6 mb-3" data-project-id="{{ project.id }}">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">{{ project.project }}</h5>
-                            <p class="card-text">{{ project.description }}</p>
+                            <h5 class="card-title project-title">{{ project.project }}</h5>
+                            <p class="card-text project-description">{{ project.description }}</p>
                         </div>
                     </div>
                 </div>
@@ -83,6 +91,50 @@
 </div>
 
 <script>
+function translateCV() {
+    const language = document.getElementById('languageSelect').value;
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    fetch(window.location.href, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': csrfToken
+        },
+        body: `translate=true&language=${language}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            const translated = data.translated;
+            document.getElementById('cv-name').textContent = 
+                `${translated.first_name} ${translated.last_name}`;
+            
+            document.getElementById('cv-bio').textContent = translated.bio;
+            
+            const skillsContainer = document.getElementById('cv-skills');
+            translated.skills.forEach(skill => {
+                const skillElement = skillsContainer.querySelector(`[data-skill-id="${skill.id}"]`);
+                if (skillElement) skillElement.textContent = skill.skill;
+            });
+            
+            translated.projects.forEach(project => {
+                const projectElement = document.querySelector(`[data-project-id="${project.id}"]`);
+                if (projectElement) {
+                    projectElement.querySelector('.project-title').textContent = project.project;
+                    projectElement.querySelector('.project-description').textContent = project.description;
+                }
+            });
+        } else {
+            alert('Translation failed: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Translation error:', error);
+        alert('Translation failed. Please try again.');
+    });
+}
+
 document.getElementById('sendPdfForm').addEventListener('submit', function(e) {
     e.preventDefault();
     
