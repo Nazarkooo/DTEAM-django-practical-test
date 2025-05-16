@@ -1,7 +1,6 @@
 import os
 from celery import Celery
 
-# Встановлюємо змінну середовища для налаштувань
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'CVProject.settings')
 
 app = Celery('CVProject')
