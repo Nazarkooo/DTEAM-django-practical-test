@@ -10,6 +10,7 @@ python = ">=3.12,<4.0"
 django = ">=5.2.1,<6.0.0"
 reportlab = { version = "^4.0.4", python = ">=3.12,<4.0" }
 xhtml2pdf = "^0.2.17"
+djangorestframework = "^3.16.0"
 
 [build-system]
 requires = ["poetry-core>=2.0.0"]
