@@ -1,17 +1,16 @@
-[project]
+[tool.poetry]
 name = "django_project"
 version = "0.1.0"
 description = ""
-authors = [
-    {name = "Nazarkooo",email = "makaryshynnazar3@gmail.com"}
-]
+authors = ["Nazarkooo <makaryshynnazar3@gmail.com>"]
 readme = "README.md"
-requires-python = ">=3.12"
-dependencies = [
-    "django (>=5.2.1,<6.0.0)"
-]
 
+[tool.poetry.dependencies]
+python = ">=3.12,<4.0"
+django = ">=5.2.1,<6.0.0"
+reportlab = { version = "^4.0.4", python = ">=3.12,<4.0" }
+xhtml2pdf = "^0.2.17"
 
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
+requires = ["poetry-core>=2.0.0"]
 build-backend = "poetry.core.masonry.api"
