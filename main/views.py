@@ -1,10 +1,11 @@
 from django.views.generic import ListView, DetailView, TemplateView
 from .models import CVModel
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.template.loader import get_template
 from io import BytesIO
 from xhtml2pdf import pisa
+from .tasks import send_cv_pdf
 
 
 class CVListView(ListView):
@@ -22,6 +23,16 @@ class CVDetailView(DetailView):
 
     def get_queryset(self):
         return CVModel.objects.prefetch_related('skills', 'projects', 'contacts')
+    
+    def post(self, request, *args, **kwargs):
+        cv = self.get_object()
+        email = request.POST.get('email')
+        
+        if email:
+            send_cv_pdf.delay(cv.id, email)
+            return JsonResponse({'status': 'success'})
+        
+        return JsonResponse({'status': 'error', 'message': 'Email is required'})
     
 
 class SettingsView(TemplateView):
