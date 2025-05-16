@@ -1,4 +1,4 @@
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, TemplateView
 from .models import CVModel
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
@@ -22,6 +22,11 @@ class CVDetailView(DetailView):
 
     def get_queryset(self):
         return CVModel.objects.prefetch_related('skills', 'projects', 'contacts')
+    
+
+class SettingsView(TemplateView):
+    template_name = 'main/settings.html'
+
 
 def download_pdf(request, pk):
     cv = get_object_or_404(CVModel.objects.prefetch_related('skills', 'projects', 'contacts'), pk=pk)
