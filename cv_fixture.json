@@ -1,0 +1,71 @@
+[
+  {
+    "model": "main.cvmodel",
+    "pk": 1,
+    "fields": {
+      "first_name": "Test",
+      "last_name": "User",
+      "bio": "Experienced Django developer with a focus on REST APIs and clean architecture."
+    }
+  },
+  {
+    "model": "main.skillmodel",
+    "pk": 1,
+    "fields": {
+      "skill": "Python",
+      "cv": 1
+    }
+  },
+  {
+    "model": "main.skillmodel",
+    "pk": 2,
+    "fields": {
+      "skill": "Django",
+      "cv": 1
+    }
+  },
+  {
+    "model": "main.skillmodel",
+    "pk": 3,
+    "fields": {
+      "skill": "REST API",
+      "cv": 1
+    }
+  },
+  {
+    "model": "main.projectmodel",
+    "pk": 1,
+    "fields": {
+      "project": "Task Manager",
+      "description": "A project management system with task assignment and progress tracking.",
+      "cv": 1
+    }
+  },
+  {
+    "model": "main.contactmodel",
+    "pk": 1,
+    "fields": {
+      "contact": "test@example.com",
+      "type": "email",
+      "cv": 1
+    }
+  },
+  {
+    "model": "main.contactmodel",
+    "pk": 2,
+    "fields": {
+      "contact": "+111111111111",
+      "type": "phone",
+      "cv": 1
+    }
+  },
+  {
+    "model": "main.contactmodel",
+    "pk": 3,
+    "fields": {
+      "contact": "https://github.com/testuser",
+      "type": "github",
+      "cv": 1
+    }
+  }
+]
